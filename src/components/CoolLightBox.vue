@@ -44,7 +44,7 @@
         <div class="cool-lightbox__progressbar" :style="stylesInterval"></div>
 
         <div class="cool-lightbox__navigation">
-          <button type="button" class="cool-lightbox-button cool-lightbox-button--prev" title="Previous" :class="buttonsClasses" v-show="(hasPreviousButton || loopData) && items.length > 1" @click="onPrevClick">
+          <button type="button" class="cool-lightbox-button cool-lightbox-button--prev" title="Zurück" :class="buttonsClasses" v-show="(hasPreviousButton || loopData) && items.length > 1" @click="onPrevClick">
             <slot name="icon-previous">
               <div class="cool-lightbox-button__icon">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.28 15.7l-1.34 1.37L5 12l4.94-5.07 1.34 1.38-2.68 2.72H19v1.94H8.6z"></path></svg>
@@ -52,7 +52,7 @@
             </slot>
           </button>
 
-          <button type="button" class="cool-lightbox-button cool-lightbox-button--next" title="Next" :class="buttonsClasses" v-show="(hasNextButton || loopData) && items.length > 1" @click="onNextClick(false)">
+          <button type="button" class="cool-lightbox-button cool-lightbox-button--next" title="Weiter" :class="buttonsClasses" v-show="(hasNextButton || loopData) && items.length > 1" @click="onNextClick(false)">
             <slot name="icon-next">
               <div class="cool-lightbox-button__icon">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.4 12.97l-2.68 2.72 1.34 1.38L19 12l-4.94-5.07-1.34 1.38 2.68 2.72H5v1.94z"></path></svg>
@@ -238,7 +238,7 @@
         
         <div class="cool-lightbox-toolbar" :class="buttonsClasses">
           
-          <button type="button" v-if="this.slideshow && items.length > 1" title="Play slideshow" class="cool-lightbox-toolbar__btn" @click="togglePlaySlideshow">
+          <button type="button" v-if="this.slideshow && items.length > 1" title="Starte slideshow" class="cool-lightbox-toolbar__btn" @click="togglePlaySlideshow">
             <svg xmlns="http://www.w3.org/2000/svg" v-if="!isPlayingSlideShow" viewBox="0 0 24 24">
               <path d="M6.5 5.4v13.2l11-6.6z"></path>
             </svg>
@@ -250,7 +250,7 @@
             </svg>
           </button>
 
-          <button type="button" @click="showThumbs = !showThumbs" title="Show thumbnails" v-if="items.length > 1 && gallery" class="cool-lightbox-toolbar__btn">
+          <button type="button" @click="showThumbs = !showThumbs" title="Zeige thumbnails" v-if="items.length > 1 && gallery" class="cool-lightbox-toolbar__btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path d="M14.59 14.59h3.76v3.76h-3.76v-3.76zm-4.47 
               0h3.76v3.76h-3.76v-3.76zm-4.47 0h3.76v3.76H5.65v-3.76zm8.94-4.47h3.76v3.76h-3.76v-3.76zm-4.47 
@@ -266,7 +266,16 @@
             </svg>
           </button>
 
-          <button type="button" v-if="showCloseButton" class="cool-lightbox-toolbar__btn" title="Close" @click="close">
+   	  <button type="button" v-if="showDeleteButton" class="cool-lightbox-toolbar__btn" title="Löschen" @click="delete">
+            <slot name="close">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M0 0h24v24H0z" fill="none"/>
+		<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+              </svg>
+            </slot>
+          </button>
+
+          <button type="button" v-if="showCloseButton" class="cool-lightbox-toolbar__btn" title="Schließen" @click="close">
             <slot name="close">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M12 10.6L6.6 5.2 5.2 6.6l5.4 5.4-5.4 5.4 1.4 1.4 5.4-5.4 5.4 5.4 1.4-1.4-5.4-5.4 5.4-5.4-1.4-1.4-5.4 5.4z"></path>
@@ -470,6 +479,11 @@ export default {
     showCloseButton: {
       type: Boolean,
       default: true,
+    },
+    
+    showDeleteButton: {
+      type: Boolean,
+      default: false,
     },
     
     disableZoom: {
@@ -1372,6 +1386,10 @@ export default {
       this.showThumbs = false;
       this.imgIndex = null;
     },
+    
+    delete() {
+      this.$emit("delete", this.imgIndex);
+    }
 
     wheelEvent(event) {
       const delay = 350;
